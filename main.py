@@ -68,4 +68,17 @@ def delete_expense(expense_id:int):
         "message":"expense not found"
     }
             
-    
+@app.put("/update-expense/{expense_id}")
+def update_expense(expense_id: int, updated_content: Expense):
+    for data in expenses:
+        if data["id"] == expense_id:
+            data["title"] = updated_content.title
+            data["amount"] = updated_content.amount
+            
+            return {
+                "message":"update expense success",
+                "data":data
+            }
+    return{
+        "message":"no expense found"
+    }
