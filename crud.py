@@ -1,6 +1,6 @@
 from database import get_connection
 
-def create_expense(title:str,amount:int):
+def create_expense(title:str,amount:float):
     
     connection = get_connection()
     
@@ -49,9 +49,7 @@ def get_expense_by_id(expense_id:int):
     connection.close()
     
     if row is None:
-        return {
-            "message":"expense no found"
-        }
+        return None
     
     return dict(row)
     

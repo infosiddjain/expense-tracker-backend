@@ -1,16 +1,16 @@
 from fastapi import FastAPI
-from database import get_connection , create_table 
+from database import  create_table 
 from schemas import Expense
 from crud import create_expense , get_all_expenses ,get_expense_by_id , delete_expense , update_expense
 
 app = FastAPI()
 
+create_table()
+
 @app.get("/")
 def home():
     return {"message":"expense tracker web site is running"}
 
-expenses = []
-id_generate = 1
 
 @app.post("/add-expenses")
 def add_expenses(expense: Expense):
