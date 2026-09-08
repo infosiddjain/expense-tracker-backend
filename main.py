@@ -38,3 +38,18 @@ def get_expenses():
         "message":"Expenses fetch success",
         "expenses": expenses
     }
+    
+    
+@app.get("/expense/{expense_id}")
+def expense_one(expense_id: int):
+    
+    for data in expenses:
+        if data["id"] == expense_id:
+            return {
+                "message" :"Get expense data ",
+                "expense": data
+            }
+    
+    return {
+        "message" :"expense not found"
+    }
