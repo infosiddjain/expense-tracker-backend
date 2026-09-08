@@ -13,15 +13,20 @@ def home():
     return {"message":"expense tracker web site is running"}
 
 expenses = []
+id_generate = 1
 
 @app.post("/add-expenses")
 def add_expenses(expense: Expense):
+    global id_generate
+    
     data = {
+        "id": id_generate,
         "title": expense.title,
         "amount": expense.amount
     }
     
     expenses.append(data)
+    id_generate += 1
     return {
         "message":"Expenses added success",
         "expenses":data
