@@ -44,6 +44,17 @@ def add_expenses(expense: Expense):
     
 @app.get("/list-expenses")
 def get_expenses():
+    
+    connection = get_connection()
+    
+    rows = connection.execute(
+        "SELECT * FROM expenses" 
+    ).fetchall()
+    
+    connection.close()
+    
+    expenses = [dict(row) for row in rows]
+        
     return {
         "message":"Expenses fetch success",
         "expenses": expenses
