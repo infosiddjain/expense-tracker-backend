@@ -53,3 +53,19 @@ def expense_one(expense_id: int):
     return {
         "message" :"expense not found"
     }
+    
+@app.delete("/delete-expense/{expense_id}")
+def delete_expense(expense_id:int):
+    
+    for data in expenses:
+        if data["id"] == expense_id:
+            expenses.remove(data)
+            return {
+                "message":"Expense delete successfully",
+                "expense":data
+            }
+    return {
+        "message":"expense not found"
+    }
+            
+    
