@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from database import get_connection , create_table 
 from schemas import Expense
-from crud import create_expense , get_all_expenses
+from crud import create_expense , get_all_expenses ,get_expense_by_id
 
 app = FastAPI()
 
@@ -39,22 +39,16 @@ def get_expenses():
 @app.get("/expense/{expense_id}")
 def expense_one(expense_id: int):
     
-    connection = get_connection()
+    expense = get_expense_by_id(expense_id)
     
-    row = connection.execute(
-        "SELECT * FROM expenses WHERE id = ?",
-        (expense_id,)
-    ).fetchone()
-    
-    connection.close()
-    if row is None:
+    if expense is None:
          return {
              "message":"Expense not found"
          }
          
     return {
         "message" :"expense  found",
-        "data": dict(row)
+        "data": expense
     }
     
 @app.delete("/delete-expense/{expense_id}")

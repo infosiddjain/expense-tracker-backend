@@ -35,3 +35,23 @@ def get_all_expenses():
     connection.close()
     
     return [dict(row) for row in rows]
+
+
+def get_expense_by_id(expense_id:int):
+    
+    connection = get_connection()
+    
+    row = connection.execute(
+        "SELECT * FROM expenses WHERE id = ?",
+        (expense_id,)
+    ).fetchone()
+    
+    connection.close()
+    
+    if row is None:
+        return {
+            "message":"expense no found"
+        }
+    
+    return dict(row)
+    
