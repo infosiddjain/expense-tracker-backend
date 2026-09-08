@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from database import get_connection , create_table 
 from schemas import Expense
-from crud import create_expense , get_all_expenses ,get_expense_by_id , delete_expense
+from crud import create_expense , get_all_expenses ,get_expense_by_id , delete_expense , update_expense
 
 app = FastAPI()
 
@@ -66,31 +66,23 @@ def delete_expense_route(expense_id:int):
     }
             
 @app.put("/update-expense/{expense_id}")
-def update_expense(expense_id: int, expense: Expense):
-    
-    connection = get_connection()
-    
-    cursor = connection.execute(
-          """
-        UPDATE expenses
-        SET title = ?, amount = ?
-        WHERE id = ?
-        """,
-        (expense.title, expense.amount, expense_id)
+def update_expense_route(expense_id: int, expense: Expense):
+
+    updated = update_expense(
+        expense_id,
+        expense.title,
+        expense.amount
     )
-    
-    connection.commit()
-    connection.close()
-    
-    if cursor.rowcount == 0:
+
+    if updated == 0:
         return {
-            "message":"no expense found"
+            "message": "Expense not found"
         }
-    
-    return{
-        "message":"expense found success",
+
+    return {
+        "message": "Expense updated successfully",
         "expense": {
-             "id": expense_id,
+            "id": expense_id,
             "title": expense.title,
             "amount": expense.amount
         }

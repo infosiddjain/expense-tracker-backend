@@ -67,3 +67,22 @@ def delete_expense(expense_id: int):
     connection.close()
     
     return cursor.rowcount
+
+def update_expense(expense_id: int, title: str, amount: float):
+
+    connection = get_connection()
+
+    cursor = connection.execute(
+        """
+        UPDATE expenses
+        SET title = ?, amount = ?
+        WHERE id = ?
+        """,
+        (title, amount, expense_id)
+    )
+
+    connection.commit()
+
+    connection.close()
+
+    return cursor.rowcount
