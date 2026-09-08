@@ -104,16 +104,32 @@ def delete_expense(expense_id:int):
     }
             
 @app.put("/update-expense/{expense_id}")
-def update_expense(expense_id: int, updated_content: Expense):
-    for data in expenses:
-        if data["id"] == expense_id:
-            data["title"] = updated_content.title
-            data["amount"] = updated_content.amount
-            
-            return {
-                "message":"update expense success",
-                "data":data
-            }
+def update_expense(expense_id: int, expense: Expense):
+    
+    connection = get_connection()
+    
+    cursor = connection.execute(
+          """
+        UPDATE expenses
+        SET title = ?, amount = ?
+        WHERE id = ?
+        """,
+        (expense.title, expense.amount, expense_id)
+    )
+    
+    connection.commit()
+    connection.close()
+    
+    if cursor.rowcount == 0:
+        return {
+            "message":"no expense found"
+        }
+    
     return{
-        "message":"no expense found"
+        "message":"expense found success",
+        "expense": {
+             "id": expense_id,
+            "title": expense.title,
+            "amount": expense.amount
+        }
     }
