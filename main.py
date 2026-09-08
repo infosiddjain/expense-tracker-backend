@@ -85,15 +85,22 @@ def expense_one(expense_id: int):
 @app.delete("/delete-expense/{expense_id}")
 def delete_expense(expense_id:int):
     
-    for data in expenses:
-        if data["id"] == expense_id:
-            expenses.remove(data)
-            return {
-                "message":"Expense delete successfully",
-                "expense":data
-            }
+    connection = get_connection()
+    
+    cursor = connection.execute( "DELETE FROM expenses WHERE id = ?",
+        (expense_id,))
+    
+    connection.commit()
+    
+    connection.close()
+    
+    if cursor.rowcount == 0:
+        return {
+            "message":"expense not found"
+        }
+    
     return {
-        "message":"expense not found"
+        "message":"expense delete successfully"
     }
             
 @app.put("/update-expense/{expense_id}")
