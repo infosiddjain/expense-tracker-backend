@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from database import get_connection , create_table 
 from schemas import Expense
+from crud import create_expense
 
 app = FastAPI()
 
@@ -14,26 +15,14 @@ id_generate = 1
 @app.post("/add-expenses")
 def add_expenses(expense: Expense):
     
-    connection = get_connection()
+    new_expense = create_expense(
+        expense.title,
+        expense.amount
+    )
     
-    cursor = connection.execute("""
-        INSERT INTO expenses (title, amount)
-        VALUES (?, ?)
-        """,
-        (expense.title, expense.amount))
-    
-    connection.commit()
-    
-    expense_id = cursor.lastrowid
-    
-    connection.close()
     return {
         "message":"Expenses added success",
-        "expenses": {
-            "id": expense_id,
-            "title": expense.title,
-            "amount": expense.amount
-        }
+        "expenses": new_expense
     }
     
 @app.get("/list-expenses")
