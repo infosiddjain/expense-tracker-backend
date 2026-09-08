@@ -1,14 +1,8 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
-
 from database import get_connection , create_table 
+from schemas import Expense
 
 app = FastAPI()
-
-class Expense(BaseModel):
-    title:str
-    amount: float
-
 
 @app.get("/")
 def home():
