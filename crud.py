@@ -23,3 +23,15 @@ def create_expense(title:str,amount:int):
         "title": title,
         "amount": amount
     }
+    
+def get_all_expenses():
+    
+    connection = get_connection()
+    
+    rows = connection.execute(
+        "SELECT * FROM expenses"
+    ).fetchall()
+    
+    connection.close()
+    
+    return [dict(row) for row in rows]

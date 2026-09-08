@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from database import get_connection , create_table 
 from schemas import Expense
-from crud import create_expense
+from crud import create_expense , get_all_expenses
 
 app = FastAPI()
 
@@ -28,15 +28,7 @@ def add_expenses(expense: Expense):
 @app.get("/list-expenses")
 def get_expenses():
     
-    connection = get_connection()
-    
-    rows = connection.execute(
-        "SELECT * FROM expenses" 
-    ).fetchall()
-    
-    connection.close()
-    
-    expenses = [dict(row) for row in rows]
+    expenses = get_all_expenses()
         
     return {
         "message":"Expenses fetch success",
