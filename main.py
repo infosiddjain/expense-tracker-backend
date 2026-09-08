@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI ,HTTPException
 from database import  create_table 
 from schemas import Expense
 from crud import create_expense , get_all_expenses ,get_expense_by_id , delete_expense , update_expense
@@ -42,9 +42,10 @@ def expense_one(expense_id: int):
     expense = get_expense_by_id(expense_id)
     
     if expense is None:
-         return {
-             "message":"Expense not found"
-         }
+         raise HTTPException(
+             status_code=404,
+             detail="Expense not found"
+         )
          
     return {
         "message" :"expense  found",
@@ -57,9 +58,10 @@ def delete_expense_route(expense_id:int):
     deleted = delete_expense(expense_id)
     
     if deleted == 0:
-        return {
-            "message":"expense not found"
-        }
+        raise HTTPException(
+            status_code=404,
+            detail="Expense not found"
+        )
     
     return {
         "message":"expense delete successfully"
@@ -75,9 +77,10 @@ def update_expense_route(expense_id: int, expense: Expense):
     )
 
     if updated == 0:
-        return {
-            "message": "Expense not found"
-        }
+        raise HTTPException(
+            status_code=404,
+            detail="Expense not found"
+        )
 
     return {
         "message": "Expense updated successfully",
