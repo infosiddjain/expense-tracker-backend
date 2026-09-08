@@ -55,3 +55,15 @@ def get_expense_by_id(expense_id:int):
     
     return dict(row)
     
+def delete_expense(expense_id: int):
+    
+    connection = get_connection()
+    
+    cursor = connection.execute(
+        "DELETE FROM expenses WHERE id = ?", (expense_id,)
+    )
+    
+    connection.commit()
+    connection.close()
+    
+    return cursor.rowcount

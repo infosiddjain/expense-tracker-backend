@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from database import get_connection , create_table 
 from schemas import Expense
-from crud import create_expense , get_all_expenses ,get_expense_by_id
+from crud import create_expense , get_all_expenses ,get_expense_by_id , delete_expense
 
 app = FastAPI()
 
@@ -52,18 +52,11 @@ def expense_one(expense_id: int):
     }
     
 @app.delete("/delete-expense/{expense_id}")
-def delete_expense(expense_id:int):
+def delete_expense_route(expense_id:int):
     
-    connection = get_connection()
+    deleted = delete_expense(expense_id)
     
-    cursor = connection.execute( "DELETE FROM expenses WHERE id = ?",
-        (expense_id,))
-    
-    connection.commit()
-    
-    connection.close()
-    
-    if cursor.rowcount == 0:
+    if deleted == 0:
         return {
             "message":"expense not found"
         }
