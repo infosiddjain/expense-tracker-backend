@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
+from database import get_connection , create_table 
+
 app = FastAPI()
 
 class Expense(BaseModel):
@@ -17,19 +19,27 @@ id_generate = 1
 
 @app.post("/add-expenses")
 def add_expenses(expense: Expense):
-    global id_generate
     
-    data = {
-        "id": id_generate,
-        "title": expense.title,
-        "amount": expense.amount
-    }
+    connection = get_connection()
     
-    expenses.append(data)
-    id_generate += 1
+    cursor = connection.execute("""
+        INSERT INTO expenses (title, amount)
+        VALUES (?, ?)
+        """,
+        (expense.title, expense.amount))
+    
+    connection.commit()
+    
+    expense_id = cursor.lastrowid
+    
+    connection.close()
     return {
         "message":"Expenses added success",
-        "expenses":data
+        "expenses": {
+            "id": expense_id,
+            "title": expense.title,
+            "amount": expense.amount
+        }
     }
     
 @app.get("/list-expenses")
